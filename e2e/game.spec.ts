@@ -60,10 +60,17 @@ test("settings modal closes on Escape", async ({ page }) => {
   await expect(page.getByRole("dialog")).toBeHidden();
 });
 
-test("difficulty persists across a reload", async ({ page }) => {
+test("difficulty persists to a fresh page load", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByRole("button", { name: hero() }).first()).toBeVisible();
   await setDifficulty(page, 3);
-  await page.reload();
-  await openSettings(page);
-  await expect(page.getByRole("radio", { name: "Difficulty 3" })).toHaveAttribute("aria-checked", "true");
+
+  // A fresh page in the same context shares localStorage - more reliable than reload()
+  // for a client-only (ssr:false) app whose reload can abort mid chunk-load.
+  const fresh = await page.context().newPage();
+  await fresh.goto("/");
+  await expect(fresh.getByRole("button", { name: hero() }).first()).toBeVisible();
+  await fresh.getByRole("button", { name: "Settings" }).click();
+  await expect(fresh.getByRole("radio", { name: "Difficulty 3" })).toHaveAttribute("aria-checked", "true");
+  await fresh.close();
 });

@@ -62,8 +62,12 @@ test("settings modal closes on Escape", async ({ page }) => {
 
 test("difficulty persists across a reload", async ({ page }) => {
   await page.goto("/");
+  await expect(page.getByRole("button", { name: hero() }).first()).toBeVisible();
   await setDifficulty(page, 3);
-  await page.reload();
+  // Let the client app settle before reloading so the ssr:false chunk load is not aborted.
+  await expect(page.getByRole("button", { name: hero() }).first()).toBeVisible();
+  await page.reload({ waitUntil: "networkidle" });
+  await expect(page.getByRole("button", { name: hero() }).first()).toBeVisible();
   await openSettings(page);
   await expect(page.getByRole("radio", { name: "Difficulty 3" })).toHaveAttribute("aria-checked", "true");
 });

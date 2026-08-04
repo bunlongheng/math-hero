@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import { Settings } from "lucide-react";
 import { HEROES, type Hero } from "@/lib/heroes";
@@ -23,13 +22,7 @@ export function HeroSelect({ onPick, onSettings, best }: { onPick: (hero: Hero) 
       <h1 className={styles.srOnly}>Math Hero - pick your hero</h1>
       <div className={styles.characterGrid}>
         {HEROES.map((hero, i) => (
-          <button
-            key={hero.id}
-            className={styles.characterCard}
-            style={{ "--hover-color": hero.color } as React.CSSProperties}
-            onClick={() => onPick(hero)}
-            aria-label={`${hero.name}, ${hero.title}`}
-          >
+          <button key={hero.id} className={styles.characterCard} onClick={() => onPick(hero)} aria-label={`${hero.name}, ${hero.title}`}>
             <span className={styles.characterArtwork}>
               <Image
                 src={hero.image}

@@ -20,7 +20,7 @@ export const OPERATIONS: { id: Operation; symbol: string; label: string }[] = [
 // Addition/subtraction operand range, and the multiplication/division factor range -
 // both scale with difficulty so every tier is genuinely harder for every operation.
 const MAX_BY_DIFFICULTY: Record<Difficulty, number> = { 1: 10, 2: 20, 3: 50, 4: 100, 5: 200 };
-const FACTOR_MAX_BY_DIFFICULTY: Record<Difficulty, number> = { 1: 5, 2: 10, 3: 12, 4: 15, 5: 20 };
+const FACTOR_MAX_BY_DIFFICULTY: Record<Difficulty, number> = { 1: 5, 2: 9, 3: 12, 4: 16, 5: 20 };
 
 function shuffle<T>(arr: T[], rng: () => number): T[] {
   const a = [...arr];

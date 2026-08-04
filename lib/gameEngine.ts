@@ -81,7 +81,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "ANSWER": {
       if (state.screen !== "playing" || state.phase !== "asking") return state;
       const answer = state.questions[state.index].answer;
-      const correct = action.value === answer;
+      const correct = isCorrect(state, action.value);
       const streak = correct ? state.streak + 1 : 0;
       // 1 treasure per correct, plus a bonus every 3rd answer in a row.
       const gained = correct ? 1 + (streak % 3 === 0 ? 1 : 0) : 0;

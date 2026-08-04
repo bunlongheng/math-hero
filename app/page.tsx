@@ -8,11 +8,11 @@ import styles from "./game.module.css";
 const Game = dynamic(() => import("@/components/Game"), {
   ssr: false,
   loading: () => (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <div className={styles.loading} role="status" aria-live="polite">
         Loading Math Hero...
       </div>
-    </div>
+    </main>
   ),
 });
 

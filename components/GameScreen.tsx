@@ -15,23 +15,31 @@ export function GameScreen(props: {
   onHome: () => void;
 }) {
   const { state, timerSeconds, timerOn, onAnswer, onTimeout, onHome } = props;
-  const { hero, questions, index, treasures, phase, picked, verdict } = state;
+  const { hero, questions, index, treasures, streak, phase, picked, verdict } = state;
   if (!hero) return null;
   const current = questions[index];
   const answering = phase !== "asking";
 
   return (
     <div className={styles.gameScreen} style={{ "--hero-color": hero.color } as React.CSSProperties}>
+      <h1 className={styles.srOnly}>
+        Question {index + 1} of {state.total}
+      </h1>
       <div className={styles.topNavRow}>
         <button className={styles.homeBtn} onClick={onHome} aria-label="Back to hero selection">
           <Home size={30} aria-hidden="true" />
         </button>
         {timerOn && phase === "asking" ? (
-          <QuizTimer key={index} seconds={timerSeconds} color={hero.color} onTimeout={onTimeout} />
+          <QuizTimer key={index} seconds={timerSeconds} onTimeout={onTimeout} />
         ) : (
           <div className={styles.timerContainer} aria-hidden="true" />
         )}
         <div className={styles.topNavRight}>
+          {streak >= 2 && (
+            <span className={styles.streakCounter} aria-label={`${streak} in a row`}>
+              <span aria-hidden="true">🔥</span> x{streak}
+            </span>
+          )}
           <div className={styles.treasureCounter} aria-label={`${treasures} treasures`}>
             <span className={styles.itemIcon} aria-hidden="true" style={{ filter: `drop-shadow(0 0 5px ${hero.color})` }}>
               {hero.item}

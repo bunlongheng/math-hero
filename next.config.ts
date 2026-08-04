@@ -5,8 +5,8 @@ import type { NextConfig } from "next";
 // on a phone. Production keeps script-src locked to 'self'.
 const isDev = process.env.NODE_ENV !== "production";
 
-// The app is fully self-contained: the US topojson is served from /public, so
-// connect-src stays 'self'. 'unsafe-inline' in script-src is required for Next's
+// The app is fully self-contained: hero PNGs and the font are self-hosted, with
+// no external requests, so connect-src stays 'self'. 'unsafe-inline' in script-src is required for Next's
 // framework bootstrap scripts on a statically prerendered page (a nonce would force
 // dynamic rendering); the app itself has no user input and no dangerouslySetInnerHTML,
 // so there is no first-party injection surface. object-src is locked to 'none'.

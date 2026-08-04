@@ -17,7 +17,10 @@ export const OPERATIONS: { id: Operation; symbol: string; label: string }[] = [
   { id: "division", symbol: "/", label: "Division" },
 ];
 
+// Addition/subtraction operand range, and the multiplication/division factor range -
+// both scale with difficulty so every tier is genuinely harder for every operation.
 const MAX_BY_DIFFICULTY: Record<Difficulty, number> = { 1: 10, 2: 20, 3: 50, 4: 100, 5: 200 };
+const FACTOR_MAX_BY_DIFFICULTY: Record<Difficulty, number> = { 1: 5, 2: 10, 3: 12, 4: 15, 5: 20 };
 
 function shuffle<T>(arr: T[], rng: () => number): T[] {
   const a = [...arr];
@@ -68,19 +71,23 @@ export function generateQuestion(op: Operation, difficulty: Difficulty, rng: () 
       symbol = "-";
       break;
     }
-    case "multiplication":
-      n1 = upTo(10);
-      n2 = upTo(10);
+    case "multiplication": {
+      const f = FACTOR_MAX_BY_DIFFICULTY[difficulty];
+      n1 = upTo(f);
+      n2 = upTo(f);
       answer = n1 * n2;
       symbol = "x";
       break;
+    }
     case "division":
-    default:
-      n2 = upTo(10);
-      answer = upTo(10);
+    default: {
+      const f = FACTOR_MAX_BY_DIFFICULTY[difficulty];
+      n2 = upTo(f);
+      answer = upTo(f);
       n1 = n2 * answer; // exact division
       symbol = "/";
       break;
+    }
   }
 
   return { prompt: `${n1} ${symbol} ${n2} = ?`, answer, options: buildOptions(answer, rng) };

@@ -4,9 +4,10 @@ export interface Settings {
   difficulty: Difficulty;
   operation: Operation;
   soundOn: boolean;
+  timerOn: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { difficulty: 1, operation: "addition", soundOn: true };
+export const DEFAULT_SETTINGS: Settings = { difficulty: 1, operation: "addition", soundOn: true, timerOn: true };
 
 const KEY = "math-hero:settings";
 const bestKey = (op: Operation, d: Difficulty) => `math-hero:best:${op}:${d}`;
@@ -20,7 +21,7 @@ export function parseSettings(raw: unknown): Settings {
   const o = raw as Record<string, unknown>;
   const difficulty = DIFFICULTIES.includes(o.difficulty as Difficulty) ? (o.difficulty as Difficulty) : DEFAULT_SETTINGS.difficulty;
   const operation = OPS.includes(o.operation as Operation) ? (o.operation as Operation) : DEFAULT_SETTINGS.operation;
-  return { difficulty, operation, soundOn: o.soundOn !== false };
+  return { difficulty, operation, soundOn: o.soundOn !== false, timerOn: o.timerOn !== false };
 }
 
 export function loadSettings(): Settings {

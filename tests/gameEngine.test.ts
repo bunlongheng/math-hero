@@ -65,6 +65,22 @@ test("ADVANCE moves to the next question and finishes the run at the end", () =>
   assert.equal(s.correct, 3);
 });
 
+test("a 3-in-a-row streak banks a bonus treasure and a wrong answer resets it", () => {
+  let s = run(5);
+  // 3 correct in a row: treasures = 1 + 1 + (1+1 bonus) = 4, correct = 3
+  for (let i = 0; i < 3; i++) {
+    s = answerCorrect(s);
+    s = gameReducer(s, { type: "ADVANCE" });
+  }
+  assert.equal(s.correct, 3);
+  assert.equal(s.streak, 3);
+  assert.equal(s.treasures, 4, "3rd consecutive correct adds a bonus treasure");
+  // a wrong answer resets the streak
+  const wrong = answerWrong(s);
+  assert.equal(wrong.streak, 0);
+  assert.equal(wrong.treasures, 4, "no treasure for a wrong answer");
+});
+
 test("HOME resets to hero selection", () => {
   const s = gameReducer(answerCorrect(run()), { type: "HOME" });
   assert.deepEqual(s, idleGame());

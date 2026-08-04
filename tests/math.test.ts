@@ -63,6 +63,19 @@ test("subtraction never goes negative and division is exact", () => {
   }
 });
 
+test("difficulty scales the factor range for multiplication and division", () => {
+  const hi = () => 0.999; // rng always near-max -> largest operands for the tier
+  // difficulty 1 caps factors at 5 (answer <= 25); difficulty 5 caps at 20 (answer <= 400).
+  const mul1 = generateQuestion("multiplication", 1, hi).answer;
+  const mul5 = generateQuestion("multiplication", 5, hi).answer;
+  assert.equal(mul1, 25);
+  assert.equal(mul5, 400);
+  assert.ok(mul5 > mul1, "harder tier yields larger products");
+  const div1 = generateQuestion("division", 1, hi);
+  const div5 = generateQuestion("division", 5, hi);
+  assert.ok(Number(div5.prompt.match(/^(\d+)/)![1]) > Number(div1.prompt.match(/^(\d+)/)![1]), "harder tier yields larger dividends");
+});
+
 test("generateRun returns the requested number of questions, seedable", () => {
   const a = generateRun("addition", 2, 10, seq([0.1, 0.5, 0.9]));
   const b = generateRun("addition", 2, 10, seq([0.1, 0.5, 0.9]));

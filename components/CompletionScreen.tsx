@@ -18,7 +18,10 @@ export function CompletionScreen(props: {
   const isNewBest = correct > best;
 
   return (
-    <div className={styles.completionScreen} role="status" aria-live="polite">
+    <div className={styles.completionScreen}>
+      <p className={styles.srOnly} role="status" aria-live="polite">
+        Victory! You scored {correct} of {total}.{isNewBest ? " New best score!" : ""}
+      </p>
       <div className={styles.victoryHeader}>
         <h1 className={styles.victoryTitle} style={{ color: hero.color }}>
           VICTORY!

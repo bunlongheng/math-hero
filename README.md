@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# Math Hero
 
-First, run the development server:
+**Pick a hero and race the clock through math.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Addition, subtraction, multiplication, and division across 5 difficulty tiers, wrapped in a comic-book hero theme built for kids.
+
+[![CI](https://github.com/bunlongheng/math-hero/actions/workflows/ci.yml/badge.svg)](https://github.com/bunlongheng/math-hero/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+[**Play it live -> math-hero-bheng.vercel.app**](https://math-hero-bheng.vercel.app)
+
+<img src="docs/demo-select.png" alt="Math Hero - pick one of 12 illustrated heroes" width="820">
+
+</div>
+
+## Features
+
+- **12 illustrated heroes** - each with its own color, element, and treasure icon; pick one to start.
+- **4 operations x 5 difficulty tiers** - addition, subtraction, multiplication, division, with the number range scaling per tier.
+- **Beat the clock** - a per-question countdown; run out of time and the answer is revealed.
+- **Learn from every answer** - a wrong pick or a timeout reveals the correct answer before moving on.
+- **Persistence** - your operation, difficulty, and sound settings plus a best score per mode are saved between sessions.
+
+<img src="docs/demo-game.png" alt="Math Hero game screen - a hero, a timed question, and four answer choices" width="820">
+
+## Tech stack
+
+| Area | Choice |
+|------|--------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript (strict) |
+| Styling | CSS Modules + `next/font` (self-hosted Playpen Sans) |
+| Images | `next/image` (self-hosted hero art) |
+| Effects | canvas-confetti, Web Audio |
+| Tests | `node:test` (pure logic) + Playwright (e2e) |
+| Hosting | Vercel |
+
+## How it works
+
+```mermaid
+flowchart LR
+  A[Browser] -->|static, client-only| B["components/Game.tsx"]
+  B -->|"buildRun(hero, op, difficulty)"| C["lib/gameEngine.ts<br/>pure reducer"]
+  C -->|"generateRun (injectable rng)"| D["lib/math.ts<br/>question generator"]
+  B --> E["lib/settings.ts<br/>localStorage"]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The quiz is a pure state machine: all randomness lives in the `buildRun` / `generateRun` factories (an injectable rng), so `gameReducer` is a pure, fully unit-tested function of `(state, action)`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Getting started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3034](http://localhost:3034).
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Script | Does |
+|--------|------|
+| `npm run dev` | Dev server on port 3034 |
+| `npm run build` | Production build |
+| `npm run typecheck` | `tsc --noEmit` (app + tests) |
+| `npm run lint` | ESLint |
+| `npm test` | Unit tests (math + engine + settings) |
+| `npm run e2e` | Playwright end-to-end tests (builds + serves on 3034) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE) (c) 2026 Bunlong Heng

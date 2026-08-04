@@ -6,8 +6,6 @@
 
 .container {
     --primary-bg: #090a0f;
-    --card-shadow: rgba(255, 255, 255, 0.4);
-    --glow-strength: 18px;
     width: 100vw;
     height: 100vh;
     height: 100svh; /* Better support for mobile browser toolbars */
@@ -563,4 +561,14 @@
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
   }
+}
+
+/* Streak indicator during play. */
+.streakCounter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 12px;
+  font-weight: 800;
+  color: #ffb020;
 }

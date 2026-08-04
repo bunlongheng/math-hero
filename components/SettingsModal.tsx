@@ -28,7 +28,8 @@ export function SettingsModal(props: {
     if (!card) return;
     // Restore focus to whatever opened the dialog when it closes (WAI-ARIA modal pattern).
     const opener = document.activeElement as HTMLElement | null;
-    card.querySelector<HTMLElement>("button, [tabindex]")?.focus();
+    // Focus the dialog itself (not the destructive close button that leads the DOM order).
+    card.focus();
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -64,6 +65,7 @@ export function SettingsModal(props: {
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-title"
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={styles.settingsHeader}>

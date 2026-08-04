@@ -52,6 +52,9 @@ test("completing a run reaches the victory screen and writes a best score", asyn
   await expect(page.getByText(/Score:/)).toBeVisible();
   const best = await page.evaluate(() => localStorage.getItem("math-hero:best:addition:1"));
   expect(best).not.toBeNull();
+  // The victory surface has unique markup - scan it too.
+  const violations = (await new AxeBuilder({ page }).analyze()).violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+  expect(violations, "victory screen").toEqual([]);
 });
 
 test("settings modal closes on Escape", async ({ page }) => {

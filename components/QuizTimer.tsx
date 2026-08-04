@@ -7,7 +7,7 @@ import styles from "@/app/game.module.css";
 // useState initializer. Remaining time is derived from a deadline timestamp (drift-free
 // under tab throttling); setLeft only ever stores a plain number and onTimeout fires from
 // the interval callback - never inside a state updater - so the updater stays pure.
-export function QuizTimer({ seconds, color, onTimeout }: { seconds: number; color: string; onTimeout: () => void }) {
+export function QuizTimer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void }) {
   const [left, setLeft] = useState(seconds);
   const onTimeoutRef = useRef(onTimeout);
   useEffect(() => {
@@ -32,7 +32,8 @@ export function QuizTimer({ seconds, color, onTimeout }: { seconds: number; colo
   const pct = Math.max(0, (left / seconds) * 100);
   return (
     <div className={styles.timerContainer} role="timer" aria-label={`${left} seconds left`}>
-      <div className={styles.timerBar} style={{ width: `${pct}%`, background: color }} />
+      {/* Bar color comes from the CSS --hero-color var (see .timerBar); only width is dynamic. */}
+      <div className={styles.timerBar} style={{ width: `${pct}%` }} />
     </div>
   );
 }

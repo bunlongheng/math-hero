@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 const hero = () => /,/; // hero buttons have aria-label "Name, Title"
 
@@ -12,7 +13,7 @@ async function saveSettings(page: import("@playwright/test").Page) {
 }
 async function setDifficulty(page: import("@playwright/test").Page, level: number) {
   await openSettings(page);
-  await page.getByRole("radio", { name: `Difficulty ${level}` }).click();
+  await page.getByRole("button", { name: `Difficulty ${level}` }).click();
   await saveSettings(page);
 }
 
@@ -71,6 +72,30 @@ test("difficulty persists to a fresh page load", async ({ page }) => {
   await fresh.goto("/");
   await expect(fresh.getByRole("button", { name: hero() }).first()).toBeVisible();
   await fresh.getByRole("button", { name: "Settings" }).click();
-  await expect(fresh.getByRole("radio", { name: "Difficulty 3" })).toHaveAttribute("aria-checked", "true");
+  await expect(fresh.getByRole("button", { name: "Difficulty 3" })).toHaveAttribute("aria-pressed", "true");
   await fresh.close();
+});
+
+test("running out of time reveals the answer", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.getByRole("button", { name: hero() }).first().click();
+  await expect(page.getByTestId("question")).toBeVisible();
+  // Blow past the 30s per-question timer using the mocked clock.
+  await page.clock.fastForward(32_000);
+  await expect(page.getByText(/Time's up/).first()).toBeVisible({ timeout: 4000 });
+});
+
+test("no serious accessibility violations on the main surfaces", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: hero() }).first()).toBeVisible();
+  const scan = async () => (await new AxeBuilder({ page }).analyze()).violations.filter((v) => v.impact === "serious" || v.impact === "critical");
+
+  expect(await scan(), "hero select").toEqual([]);
+  await openSettings(page);
+  expect(await scan(), "settings dialog").toEqual([]);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: hero() }).first().click();
+  await expect(page.getByTestId("question")).toBeVisible();
+  expect(await scan(), "game screen").toEqual([]);
 });

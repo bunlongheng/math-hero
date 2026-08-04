@@ -12,9 +12,11 @@ export function SettingsModal(props: {
   onOperation: (o: Operation) => void;
   soundOn: boolean;
   onSound: (v: boolean) => void;
+  timerOn: boolean;
+  onTimer: (v: boolean) => void;
   onClose: () => void;
 }) {
-  const { difficulty, onDifficulty, operation, onOperation, soundOn, onSound, onClose } = props;
+  const { difficulty, onDifficulty, operation, onOperation, soundOn, onSound, timerOn, onTimer, onClose } = props;
   const cardRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
   useEffect(() => {
@@ -24,7 +26,10 @@ export function SettingsModal(props: {
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
+    // Restore focus to whatever opened the dialog when it closes (WAI-ARIA modal pattern).
+    const opener = document.activeElement as HTMLElement | null;
     card.querySelector<HTMLElement>("button, [tabindex]")?.focus();
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -45,7 +50,10 @@ export function SettingsModal(props: {
       }
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      opener?.focus?.();
+    };
   }, []);
 
   return (
@@ -71,12 +79,11 @@ export function SettingsModal(props: {
           <div className={styles.settingLabel} id="difficulty-label">
             DIFFICULTY
           </div>
-          <div className={styles.optionRow} role="radiogroup" aria-labelledby="difficulty-label">
+          <div className={styles.optionRow} role="group" aria-labelledby="difficulty-label">
             {([1, 2, 3, 4, 5] as const).map((d) => (
               <button
                 key={d}
-                role="radio"
-                aria-checked={difficulty === d}
+                aria-pressed={difficulty === d}
                 aria-label={`Difficulty ${d}`}
                 className={`${styles.configBtn} ${difficulty === d ? styles.active : ""}`}
                 onClick={() => onDifficulty(d)}
@@ -90,14 +97,13 @@ export function SettingsModal(props: {
 
         <div className={styles.settingGroup}>
           <div className={styles.settingLabel} id="op-label">
-            OPERATIONS
+            OPERATION
           </div>
-          <div className={styles.optionRow} role="radiogroup" aria-labelledby="op-label">
+          <div className={styles.optionRow} role="group" aria-labelledby="op-label">
             {OPERATIONS.map((op) => (
               <button
                 key={op.id}
-                role="radio"
-                aria-checked={operation === op.id}
+                aria-pressed={operation === op.id}
                 aria-label={op.label}
                 className={`${styles.configBtn} ${styles.opBtn} ${operation === op.id ? styles.active : ""}`}
                 onClick={() => onOperation(op.id)}
@@ -109,12 +115,15 @@ export function SettingsModal(props: {
         </div>
 
         <div className={styles.settingGroup}>
-          <div className={styles.settingLabel} id="sound-label">
+          <div className={styles.settingLabel} id="options-label">
             OPTIONS
           </div>
-          <div className={styles.optionRow} aria-labelledby="sound-label">
+          <div className={styles.optionRow} role="group" aria-labelledby="options-label">
             <button className={`${styles.configBtn} ${soundOn ? styles.active : ""}`} aria-pressed={soundOn} onClick={() => onSound(!soundOn)}>
               {soundOn ? "🔊" : "🔇"} Sound
+            </button>
+            <button className={`${styles.configBtn} ${timerOn ? styles.active : ""}`} aria-pressed={timerOn} onClick={() => onTimer(!timerOn)}>
+              {timerOn ? "⏱️" : "⏳"} Timer
             </button>
           </div>
         </div>

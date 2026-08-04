@@ -4,7 +4,7 @@ import { useEffect, useReducer, useState } from "react";
 import confetti from "canvas-confetti";
 import type { Hero } from "@/lib/heroes";
 import type { Operation, Difficulty } from "@/lib/math";
-import { gameReducer, idleGame, buildRun, TOTAL_QUESTIONS } from "@/lib/gameEngine";
+import { gameReducer, idleGame, buildRun, isCorrect, TOTAL_QUESTIONS } from "@/lib/gameEngine";
 import { loadSettings, saveSettings, readBest, writeBest, type Settings } from "@/lib/settings";
 import { useGameAudio, prefersReducedMotion } from "@/lib/useGameAudio";
 import { HeroSelect } from "./HeroSelect";
@@ -17,7 +17,7 @@ const TIMER_SECONDS = 30;
 
 export default function Game() {
   const [settings, setSettings] = useState<Settings>(loadSettings);
-  const { difficulty, operation, soundOn } = settings;
+  const { difficulty, operation, soundOn, timerOn } = settings;
   const [showSettings, setShowSettings] = useState(false);
   const [game, dispatch] = useReducer(gameReducer, undefined, idleGame);
   const [bestAtStart, setBestAtStart] = useState(0);
@@ -54,7 +54,7 @@ export default function Game() {
 
   const answer = (value: number) => {
     if (game.phase !== "asking") return;
-    const correct = value === game.questions[game.index].answer;
+    const correct = isCorrect(game, value);
     if (correct) {
       if (soundOn) playSuccess();
       if (!prefersReducedMotion()) {
@@ -75,14 +75,16 @@ export default function Game() {
   const changeOperation = (o: Operation) => patch({ operation: o });
 
   return (
-    <div className={styles.container} style={game.hero ? ({ "--hero-color": game.hero.color } as React.CSSProperties) : undefined}>
-      {game.screen === "selection" && <HeroSelect onPick={pickHero} onSettings={() => setShowSettings(true)} />}
+    <main className={styles.container} style={game.hero ? ({ "--hero-color": game.hero.color } as React.CSSProperties) : undefined}>
+      {game.screen === "selection" && (
+        <HeroSelect onPick={pickHero} onSettings={() => setShowSettings(true)} best={readBest(operation, difficulty)} />
+      )}
 
       {game.screen === "playing" && (
         <GameScreen
           state={game}
           timerSeconds={TIMER_SECONDS}
-          timerOn
+          timerOn={timerOn}
           onAnswer={answer}
           onTimeout={onTimeout}
           onHome={() => dispatch({ type: "HOME" })}
@@ -109,9 +111,11 @@ export default function Game() {
           onOperation={changeOperation}
           soundOn={soundOn}
           onSound={(v) => patch({ soundOn: v })}
+          timerOn={timerOn}
+          onTimer={(v) => patch({ timerOn: v })}
           onClose={() => setShowSettings(false)}
         />
       )}
-    </div>
+    </main>
   );
 }

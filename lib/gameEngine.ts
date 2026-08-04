@@ -18,6 +18,7 @@ export interface GameState {
   total: number;
   correct: number;
   treasures: number;
+  streak: number; // consecutive correct answers - every 3rd banks a bonus treasure
   phase: Phase;
   picked: number | null; // the option the player chose (null on timeout)
   lastCorrect: boolean | null;
@@ -40,11 +41,18 @@ export function idleGame(): GameState {
     total: 0,
     correct: 0,
     treasures: 0,
+    streak: 0,
     phase: "asking",
     picked: null,
     lastCorrect: null,
     verdict: null,
   };
+}
+
+// The single definition of "did this value answer the current question" - shared by
+// the reducer (scoring) and the component (sound/confetti before dispatch).
+export function isCorrect(state: GameState, value: number): boolean {
+  return state.screen === "playing" && state.index < state.questions.length && value === state.questions[state.index].answer;
 }
 
 export interface RunOptions {
@@ -74,14 +82,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (state.screen !== "playing" || state.phase !== "asking") return state;
       const answer = state.questions[state.index].answer;
       const correct = action.value === answer;
+      const streak = correct ? state.streak + 1 : 0;
+      // 1 treasure per correct, plus a bonus every 3rd answer in a row.
+      const gained = correct ? 1 + (streak % 3 === 0 ? 1 : 0) : 0;
       return {
         ...state,
         phase: "revealing",
         picked: action.value,
         lastCorrect: correct,
+        streak,
         correct: state.correct + (correct ? 1 : 0),
-        treasures: state.treasures + (correct ? 1 : 0),
-        verdict: correct ? "Correct!" : `The answer was ${answer}`,
+        treasures: state.treasures + gained,
+        verdict: correct ? (gained > 1 ? "Correct! Streak bonus!" : "Correct!") : `The answer was ${answer}`,
       };
     }
 
@@ -93,6 +105,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: "revealing",
         picked: null,
         lastCorrect: false,
+        streak: 0,
         verdict: `Time's up - the answer was ${answer}`,
       };
     }

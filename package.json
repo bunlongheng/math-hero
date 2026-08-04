@@ -2,6 +2,9 @@
   "name": "math-hero",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev -p 3034",
     "build": "next build",
@@ -11,7 +14,7 @@
     "test": "node --experimental-strip-types --test tests/math.test.ts tests/gameEngine.test.ts tests/settings.test.ts",
     "test:coverage": "node --experimental-strip-types --experimental-test-coverage --test-coverage-lines=80 --test tests/math.test.ts tests/gameEngine.test.ts tests/settings.test.ts",
     "e2e": "playwright test",
-    "prepare": "husky || true"
+    "prepare": "husky"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
@@ -21,15 +24,15 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.62.1",
-    "@tailwindcss/postcss": "^4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
-    "tailwindcss": "^4",
+    "husky": "^9.1.7",
     "typescript": "^5"
   }
 }

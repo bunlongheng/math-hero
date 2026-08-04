@@ -74,8 +74,10 @@ export function GameScreen(props: {
                   key={opt}
                   className={cls}
                   style={{ "--hero-border": hero.color } as React.CSSProperties}
+                  // aria-disabled (not disabled) so keyboard focus is not thrown to <body>
+                  // during the reveal; onAnswer no-ops outside the "asking" phase anyway.
+                  aria-disabled={answering}
                   onClick={() => onAnswer(opt)}
-                  disabled={answering}
                 >
                   {opt}
                 </button>

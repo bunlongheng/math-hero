@@ -4,31 +4,30 @@ import { useEffect, useRef, useState } from "react";
 import styles from "@/app/game.module.css";
 
 // Countdown bar. Remounted per question via a `key`, so the start value comes from the
-// useState initializer (never a setState in an effect). The interval's setState is async
-// and onTimeout is deferred out of the updater, so there is no synchronous setState-in-effect.
+// useState initializer. Remaining time is derived from a deadline timestamp (drift-free
+// under tab throttling); setLeft only ever stores a plain number and onTimeout fires from
+// the interval callback - never inside a state updater - so the updater stays pure.
 export function QuizTimer({ seconds, color, onTimeout }: { seconds: number; color: string; onTimeout: () => void }) {
   const [left, setLeft] = useState(seconds);
-  const firedRef = useRef(false);
   const onTimeoutRef = useRef(onTimeout);
   useEffect(() => {
     onTimeoutRef.current = onTimeout;
   });
 
   useEffect(() => {
+    const deadline = Date.now() + seconds * 1000;
+    let fired = false;
     const id = setInterval(() => {
-      setLeft((p) => {
-        const next = p - 1;
-        if (next <= 0 && !firedRef.current) {
-          firedRef.current = true;
-          clearInterval(id);
-          queueMicrotask(() => onTimeoutRef.current());
-          return 0;
-        }
-        return next;
-      });
-    }, 1000);
+      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      setLeft(remaining);
+      if (remaining <= 0 && !fired) {
+        fired = true;
+        clearInterval(id);
+        onTimeoutRef.current();
+      }
+    }, 250);
     return () => clearInterval(id);
-  }, []);
+  }, [seconds]);
 
   const pct = Math.max(0, (left / seconds) * 100);
   return (

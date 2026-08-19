@@ -1,3 +1,9 @@
+html {
+  /* Render native UI (scrollbars, overscroll gutter, form controls) in dark mode
+     so the scrollbar matches the theme instead of the default light one. */
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;

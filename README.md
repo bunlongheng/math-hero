@@ -58,13 +58,13 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3034](http://localhost:3034).
+Open [http://localhost:3026](http://localhost:3026).
 
 ## Scripts
 
 | Script | Does |
 |--------|------|
-| `npm run dev` | Dev server on port 3034 |
+| `npm run dev` | Dev server on port 3026 |
 | `npm run build` | Production build |
 | `npm run typecheck` | `tsc --noEmit` (app + tests) |
 | `npm run lint` | ESLint |

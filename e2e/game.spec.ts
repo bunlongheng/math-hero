@@ -71,8 +71,11 @@ test("difficulty persists to a fresh page load", async ({ page }) => {
 
   // A fresh page in the same context shares localStorage - more reliable than reload()
   // for a client-only (ssr:false) app whose reload can abort mid chunk-load.
+  // waitUntil "commit" resolves at navigation commit (not full load), so the SPA's
+  // chunk loading can't abort the goto (net::ERR_ABORTED); the visible assertion below
+  // then waits for the client to render.
   const fresh = await page.context().newPage();
-  await fresh.goto("/");
+  await fresh.goto("/", { waitUntil: "commit" });
   await expect(fresh.getByRole("button", { name: hero() }).first()).toBeVisible();
   await fresh.getByRole("button", { name: "Settings" }).click();
   await expect(fresh.getByRole("button", { name: "Difficulty 3" })).toHaveAttribute("aria-pressed", "true");

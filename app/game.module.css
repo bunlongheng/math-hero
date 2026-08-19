@@ -92,7 +92,7 @@
 }
 
 .characterCard:hover {
-    transform: scale(1.1) translateY(-10px);
+    transform: scale(1.05) translateY(-5px);
     z-index: 5;
 }
 

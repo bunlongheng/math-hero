@@ -40,5 +40,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # `playwright install --with-deps` runs apt-get, which intermittently hangs on a
+      # slow Ubuntu mirror and eats the whole 15-min job. Cap each attempt at 5 min and
+      # retry up to 3 times so a stuck mirror is killed and retried instead of timing out.
+      - name: Install Playwright browsers (timeout + retry)
+        run: |
+          for i in 1 2 3; do
+            timeout 300 npx playwright install --with-deps chromium && exit 0
+            echo "playwright install attempt $i hung or failed; retrying"
+            sleep 10
+          done
+          exit 1
       - run: npm run e2e

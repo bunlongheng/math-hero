@@ -104,10 +104,13 @@
     }
 }
 
-/* Stronger hero-colored glow on hover so the focused card lifts off the dark theme. */
+/* Stronger hero-colored glow on hover so the focused card lifts off the dark theme.
+   Same color-mix(in srgb) format as the resting glow so the filter transition
+   interpolates in srgb (pure alpha ramp) instead of oklab, which produced an
+   out-of-gamut / wrong shadow color mid-hover. */
 .characterCard:hover .characterArtwork,
 .characterCard:focus-visible .characterArtwork {
-    filter: drop-shadow(0 0 18px var(--hero-color, #00d9ff));
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--hero-color, #00d9ff) 100%, transparent));
 }
 
 /* --- IMAGE --- */

@@ -3,18 +3,12 @@
 import Image from "next/image";
 import { Settings } from "lucide-react";
 import { HEROES, type Hero } from "@/lib/heroes";
-import { TOTAL_QUESTIONS } from "@/lib/gameEngine";
 import styles from "@/app/game.module.css";
 
-export function HeroSelect({ onPick, onSettings, best }: { onPick: (hero: Hero) => void; onSettings: () => void; best: number }) {
+export function HeroSelect({ onPick, onSettings }: { onPick: (hero: Hero) => void; onSettings: () => void }) {
   return (
     <div className={styles.characterSelection}>
       <div className={styles.headerRow}>
-        {best > 0 && (
-          <span className={styles.bestBadge}>
-            Best: {best}/{TOTAL_QUESTIONS}
-          </span>
-        )}
         <button className={styles.selectionSettingsBtn} onClick={onSettings} aria-label="Settings">
           <Settings size={32} aria-hidden="true" />
         </button>

@@ -515,16 +515,6 @@
 .itemIcon {
   font-size: 1.3rem;
 }
-.bestBadge {
-  margin-right: auto;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-weight: 800;
-  font-size: 0.85rem;
-}
-
 /* Game content layout. */
 .gameContentWrapper {
   flex: 1;

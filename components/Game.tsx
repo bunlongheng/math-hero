@@ -77,7 +77,7 @@ export default function Game() {
   return (
     <main className={styles.container} style={game.hero ? ({ "--hero-color": game.hero.color } as React.CSSProperties) : undefined}>
       {game.screen === "selection" && (
-        <HeroSelect onPick={pickHero} onSettings={() => setShowSettings(true)} best={readBest(operation, difficulty)} />
+        <HeroSelect onPick={pickHero} onSettings={() => setShowSettings(true)} />
       )}
 
       {game.screen === "playing" && (

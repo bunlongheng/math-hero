@@ -70,7 +70,9 @@
 
 .characterCard {
     width: 100%;
-    aspect-ratio: 2 / 3;
+    /* Matches the cropped hero art (945x1489) so object-fit: cover fills exactly and
+       the glow hugs the card - no dark margin re-cropped in. */
+    aspect-ratio: 945 / 1489;
     cursor: pointer;
     position: relative;
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

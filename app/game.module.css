@@ -146,29 +146,34 @@
 /* --- HERO DISPLAY --- */
 
 .heroSection {
-    height: 40vh;
+    /* Flexible so the hero shrinks to whatever height is left after the question +
+       answers, keeping quiz mode inside the viewport on short (laptop) screens. */
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 1vh 20px;
 }
 
 .characterHero {
-    height: 300px;
-    width: 220px;
-    max-width: 60vw;
-    aspect-ratio: 2/3;
+    height: 100%;
+    max-height: 46vh; /* cap on tall screens; shrinks with .heroSection on short ones */
+    width: auto;
+    max-width: 55vw;
+    aspect-ratio: 945 / 1489; /* matches the cropped hero art */
     filter: drop-shadow(0 0 25px var(--hero-color));
 }
 
 /* --- QUESTION --- */
 
 .questionSection {
-    padding: 2vh 0;
+    padding: 1.5vh 0;
+    flex-shrink: 0;
 }
 
 .questionText {
-    font-size: clamp(2.5rem, 10vh, 4rem);
+    font-size: clamp(2rem, 7vh, 4rem);
     font-weight: 800;
     text-align: center;
     color: #fff;
@@ -180,14 +185,15 @@
 .answerSection {
     width: 90%;
     max-width: 500px;
-    margin: 0 auto 4vh auto;
+    margin: 0 auto;
+    flex-shrink: 0;
 }
 
 .answersGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 15px;
+    gap: clamp(8px, 1.5vh, 15px);
 }
 
 .answerBtn {
@@ -522,12 +528,13 @@
 /* Game content layout. */
 .gameContentWrapper {
   flex: 1;
+  min-height: 0; /* let the hero section shrink so quiz mode fits the viewport */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 12px 16px 32px;
+  gap: clamp(8px, 1.5vh, 20px);
+  padding: 12px 16px clamp(12px, 2vh, 32px);
 }
 
 /* Answer feedback. */

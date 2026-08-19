@@ -149,10 +149,11 @@
 /* --- HERO DISPLAY --- */
 
 .heroSection {
-    /* Flexible so the hero shrinks to whatever height is left after the question +
-       answers, keeping quiz mode inside the viewport on short (laptop) screens. */
+    /* Fills the space left after the question + answers (so quiz mode fits with no
+       scroll) but never below 130px, so the hero can't collapse to a sliver on short
+       screens the way a fully-flexible height did. */
     flex: 1 1 auto;
-    min-height: 0;
+    min-height: 130px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,7 +162,8 @@
 
 .characterHero {
     height: 100%;
-    max-height: 46vh; /* cap on tall screens; shrinks with .heroSection on short ones */
+    min-height: 120px; /* always clearly visible even when the section is at its floor */
+    max-height: 46vh; /* cap on tall screens */
     width: auto;
     max-width: 55vw;
     aspect-ratio: 945 / 1489; /* matches the cropped hero art */

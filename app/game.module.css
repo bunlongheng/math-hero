@@ -24,6 +24,7 @@
 
 .characterSelection {
     flex: 1;
+    min-height: 0; /* let the grid fill/shrink so all 12 fit the viewport (no scroll) */
     display: flex;
     flex-direction: column;
     padding: 2vh 4vw;
@@ -41,19 +42,27 @@
 
 .characterGrid {
     display: grid;
-    /* Default: 3 columns (Mobile/Samsung Z series) */
+    /* Default: 3 columns x 4 rows (mobile) - fill the viewport height so all 12 fit
+       without scrolling; cards are sized by row height (see .characterCard). */
     grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
     gap: 1.5vh;
+    flex: 1;
+    min-height: 0;
+    place-items: center;
     width: 100%;
     max-width: 1600px;
-    margin: auto;
-    padding-bottom: 4vh;
+    margin: 0 auto;
+    padding-bottom: 1vh;
 }
 
-/* Tablet / iPad Layout: 6 columns */
+/* Tablet / iPad Layout: 6 columns x 2 rows (fits the height width-driven already) */
 @media (min-width: 768px) {
     .characterGrid {
         grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: auto;
+        flex: 0 1 auto;
+        align-content: center;
         gap: 2vh;
     }
 }
@@ -69,9 +78,12 @@
 /* --- CARD --- */
 
 .characterCard {
-    width: 100%;
-    /* Matches the cropped hero art (945x1489) so object-fit: cover fills exactly and
-       the glow hugs the card - no dark margin re-cropped in. */
+    /* Mobile: size by row height so 4 rows fit the viewport; aspect matches the cropped
+       art (945x1489). max-width keeps it inside the column. Tablet+ reverts to width-
+       driven (see media query) since those layouts already fit vertically. */
+    height: 100%;
+    width: auto;
+    max-width: 100%;
     aspect-ratio: 945 / 1489;
     cursor: pointer;
     position: relative;
@@ -90,10 +102,18 @@
     z-index: 5;
 }
 
+@media (min-width: 768px) {
+    .characterCard {
+        height: auto;
+        width: 100%;
+        max-width: none;
+    }
+}
+
 /* Stronger hero-colored glow on hover so the focused card lifts off the dark theme. */
 .characterCard:hover .characterArtwork,
 .characterCard:focus-visible .characterArtwork {
-    box-shadow: 0 0 24px 2px var(--hero-color, #00d9ff);
+    filter: drop-shadow(0 0 18px var(--hero-color, #00d9ff));
 }
 
 /* --- IMAGE --- */
@@ -102,11 +122,11 @@
     width: 100%;
     height: 100%;
     display: block;
-    border-radius: 8px; /* Matches the card assets */
-    /* Resting hero-colored glow so every card (even the dark ones) lifts smoothly
-       off the near-black theme; --hero-color is set per card in HeroSelect. */
-    box-shadow: 0 0 10px color-mix(in srgb, var(--hero-color, #00d9ff) 40%, transparent);
-    transition: box-shadow 0.3s ease;
+    /* Glow follows the card's rounded alpha (drop-shadow, not a rectangular box-shadow)
+       so it hugs the corners cleanly; the PNGs carry their own transparent rounded
+       corners. --hero-color is set per card in HeroSelect. */
+    filter: drop-shadow(0 0 9px color-mix(in srgb, var(--hero-color, #00d9ff) 55%, transparent));
+    transition: filter 0.3s ease;
 }
 
 /* ===============================

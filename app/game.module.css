@@ -149,11 +149,7 @@
 /* --- HERO DISPLAY --- */
 
 .heroSection {
-    /* Fills the space left after the question + answers (so quiz mode fits with no
-       scroll) but never below 130px, so the hero can't collapse to a sliver on short
-       screens the way a fully-flexible height did. */
-    flex: 1 1 auto;
-    min-height: 130px;
+    flex: 0 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,11 +157,14 @@
 }
 
 .characterHero {
-    height: 100%;
-    min-height: 120px; /* always clearly visible even when the section is at its floor */
-    max-height: 46vh; /* cap on tall screens */
+    /* Size the hero directly off the viewport height (not height:100% inside a flex
+       parent - Safari does not resolve that percentage and collapsed the card to its
+       min on iPad). 44vh for a big, prominent card, but capped by (100vh - 400px) so
+       it auto-shrinks to reserve room for the question + answers on short screens;
+       150px floor, 560px ceiling. */
+    height: clamp(150px, min(44vh, 100vh - 400px), 560px);
     width: auto;
-    max-width: 55vw;
+    max-width: 60vw;
     aspect-ratio: 945 / 1489; /* matches the cropped hero art */
     filter: drop-shadow(0 0 25px var(--hero-color));
 }

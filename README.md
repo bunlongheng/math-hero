@@ -74,3 +74,9 @@ Open [http://localhost:3026](http://localhost:3026).
 ## License
 
 [MIT](LICENSE) (c) 2026 Bunlong Heng
+
+---
+
+<p align="center">
+  <sub>Built by <a href="https://bunlongheng.com">Bunlong Heng</a> &middot; <a href="https://bunlongheng.com/projects/math-hero">See it in my portfolio &rarr;</a></sub>
+</p>

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playpen_Sans } from "next/font/google";
 import "./globals.css";
+import SwRegister from "./sw-register";
 
 // Self-hosted at build time by next/font - no runtime CDN, so the CSP stays locked to 'self'.
 const playpen = Playpen_Sans({ subsets: ["latin"], weight: ["600", "800"], variable: "--font-playpen", display: "swap" });
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   title,
   description,
   applicationName: title,
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title,
     description,
@@ -34,7 +36,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={playpen.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <SwRegister />
+      </body>
     </html>
   );
 }

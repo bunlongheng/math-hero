@@ -56,6 +56,14 @@
     padding-bottom: 1vh;
 }
 
+/* Foldable open screen (and any 600-767 width): 4 columns x 3 rows so the cards
+   use the full width instead of 3 narrow columns with wide empty gutters. */
+@media (min-width: 600px) and (max-width: 767px) {
+    .characterGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
 /* Tablet + Desktop: 6 columns x 2 rows, centered in the viewport. Capped by the grid
    max-width so cards stay a sensible size on big monitors instead of one tiny row. */
 @media (min-width: 768px) {
